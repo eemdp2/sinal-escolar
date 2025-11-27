@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinal Escolar PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <h1>Sinal Escolar</h1>
+        <div id="relogio">00:00:00</div>
+        
+        <button id="btnIniciar">ATIVAR SISTEMA</button>
+        <p id="status">Sistema Inativo. Clique em ativar.</p>
+        
+        <div class="proximo-toque">
+            Próximo sinal: <span id="proxSinal">--:--</span>
+        </div>
+    </div>
+
+    <audio id="somPadrao" src="sons/sinal1.mp3"></audio>
+    <script src="script.js"></script>
+    <script>
+        // Registro do Service Worker para funcionar Offline
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("Service Worker Registrado!"));
+        }
+    </script>
+</body>
+</html>
