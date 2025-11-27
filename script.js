@@ -6,11 +6,23 @@ const audio = document.getElementById('somPadrao');
 
 // Configuração dos Horários (Formato HH:MM)
 const horarios = [
-    "07:50", // Fim da 1ª aula
-    "08:40", // Fim da 2ª aula
-    "09:30", // Recreio
-    "09:50", // Volta do Recreio
-    "10:40"  // Fim da 3ª aula
+    // --- MANHÃ ---
+    "07:00", // Entrada
+    "07:45", // Troca de aula
+    "08:30", // Troca de aula
+    "09:15", // Início do Intervalo (25min)
+    "09:40", // Fim do Intervalo
+    "10:25", // Troca de aula
+    "11:10", // Saída
+
+    // --- TARDE ---
+    "13:00", // Entrada
+    "13:45", // Troca de aula
+    "14:30", // Troca de aula
+    "15:15", // Início do Intervalo (25min)
+    "15:40", // Fim do Intervalo
+    "16:25", // Troca de aula
+    "17:10"  // Saída
 ];
 
 let sistemaAtivo = false;
