@@ -21,7 +21,7 @@ const horarios = [
     "14:30", // Troca de aula
     "15:15", // Início do Intervalo (25min)
     "15:40", // Fim do Intervalo
-    "16:25", // Troca de aula
+    "16:27", // Troca de aula
     "17:10"  // Saída
 ];
 
