@@ -3,8 +3,7 @@ const displayProx = document.getElementById('proxSinal');
 const btnIniciar = document.getElementById('btnIniciar');
 const statusTexto = document.getElementById('status');
 
-// Mapeamento simples: Horário -> ID do Áudio
-// Nota: O horário 17:10 é tratado de forma especial na função tocarSinal
+// Mapeamento simples: Horário -> ID do Áudio Específico
 const mapaHorarios = {
     // --- MANHÃ ---
     "07:00": "somA1", // Início
@@ -28,18 +27,16 @@ const mapaHorarios = {
     "17:55": "somA9"  // Fim 6ª (Apenas Seg/Ter)
 };
 
-// Horários especiais que exigem lógica extra
 const horariosEspeciais = ["17:10"]; 
 
 let sistemaAtivo = false;
 let wakeLock = null;
 
-// Mantém a tela ligada
 async function manterTelaLigada() {
     try {
         wakeLock = await navigator.wakeLock.request('screen');
         statusTexto.innerText = "Sistema Ativo e Tela Bloqueada (Não feche)";
-        statusTexto.style.color = "#4CAF50"; // Verde
+        statusTexto.style.color = "#4CAF50"; 
     } catch (err) {
         statusTexto.innerText = "Sistema Ativo (Mantenha o app aberto)";
     }
@@ -47,10 +44,13 @@ async function manterTelaLigada() {
 
 btnIniciar.addEventListener('click', () => {
     sistemaAtivo = true;
-    // Toca um som mudo ou breve apenas para liberar o áudio no navegador
+    
+    // Libera o áudio do Intro e do A1 para o navegador "acordar" o som
+    const intro = document.getElementById('somIntro');
     const unlock = document.getElementById('somA1');
-    unlock.play().catch(() => {});
-    unlock.pause();
+    
+    intro.play().catch(()=>{}); intro.pause();
+    unlock.play().catch(()=>{}); unlock.pause();
     
     btnIniciar.style.display = 'none';
     manterTelaLigada();
@@ -69,51 +69,61 @@ function atualizarRelogio() {
     if (sistemaAtivo && segundos === "00") {
         verificarToque(horaAtual);
     }
-    // Atualiza o próximo sinal a cada virada de minuto para economizar processamento
+    
     if (segundos === "00") {
         atualizarProximoSinal();
     }
 }
 
 function verificarToque(hora) {
-    // Caso 1: Horário Especial (17:10 - Saída vs 6ª Aula)
+    // Caso 1: Horário Especial (17:10)
     if (hora === "17:10") {
-        const diaSemana = new Date().getDay(); // 0=Dom, 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex
+        const diaSemana = new Date().getDay(); 
         
-        // Se for Quarta(3), Quinta(4) ou Sexta(5)
         if (diaSemana >= 3 && diaSemana <= 5) {
-            tocarAudio('somFim'); // Encerra aulas
-            console.log("Sexta aula cancelada (Qua-Sex). Tocando saída.");
+            tocarSequencia('somFim'); // Intro + Saída
+            console.log("Sexta aula cancelada. Tocando saída.");
         } else {
-            tocarAudio('somA8'); // Começa a 6ª aula (Seg/Ter)
+            tocarSequencia('somA8'); // Intro + 6ª aula
             console.log("Iniciando 6ª aula.");
         }
         return;
     }
 
-    // Caso 2: Horários normais da lista
+    // Caso 2: Horários normais
     if (mapaHorarios[hora]) {
-        tocarAudio(mapaHorarios[hora]);
+        tocarSequencia(mapaHorarios[hora]);
     }
 }
 
-function tocarAudio(idElemento) {
-    const audio = document.getElementById(idElemento);
-    if (audio) {
-        audio.currentTime = 0;
-        audio.play();
-        console.log(`Tocando: ${idElemento}`);
+// NOVA FUNÇÃO: Toca Intro -> Espera -> Toca Específico
+function tocarSequencia(idElementoEspecifico) {
+    const intro = document.getElementById('somIntro');
+    const especifico = document.getElementById(idElementoEspecifico);
+
+    if (intro && especifico) {
+        console.log(`Iniciando sequência: Intro + ${idElementoEspecifico}`);
+        
+        // Garante que o volume está no máximo
+        intro.volume = 1.0;
+        especifico.volume = 1.0;
+
+        // Quando o intro terminar, toca o próximo
+        intro.onended = function() {
+            especifico.currentTime = 0;
+            especifico.play();
+        };
+
+        // Começa tocando o intro
+        intro.currentTime = 0;
+        intro.play();
     }
 }
 
 function atualizarProximoSinal() {
     const agora = new Date();
     const horaAtualMinutos = agora.getHours() * 60 + agora.getMinutes();
-    
-    // Junta todas as chaves de horário para procurar o próximo
     const listaHorarios = [...Object.keys(mapaHorarios), ...horariosEspeciais];
-    
-    // Ordena os horários
     listaHorarios.sort();
 
     const proximo = listaHorarios.find(h => {
