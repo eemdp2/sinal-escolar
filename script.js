@@ -9,7 +9,7 @@ const mapaHorarios = {
     "07:00": "somA1", // Início
     "07:45": "somA2", // Fim 1ª
     "08:30": "somA3", // Fim 2ª
-    "09:20": "somA4", // Início Intervalo
+    "09:15": "somA4", // Início Intervalo
     "09:36": "somA5", // Aviso (4 min antes de 09:40)
     "09:40": "somA6", // Fim Intervalo / Início 4ª
     "10:25": "somA7", // Início 5ª
