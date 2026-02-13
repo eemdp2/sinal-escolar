@@ -1,98 +1,89 @@
-/* Reset básico para garantir que fique igual em todo navegador */
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #121212; /* Fundo escuro */
-    color: #e0e0e0; /* Texto claro */
+    background-color: #0d0d0d; /* Fundo quase preto para economizar energia da TV */
+    color: #ffffff;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Remove barras de rolagem */
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    height: 100vh; /* Altura total da tela */
-    text-align: center;
+    align-items: center;
 }
 
 .container {
-    background-color: #1e1e1e; /* Cartão cinza escuro */
-    padding: 30px 20px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    width: 90%;
-    max-width: 400px; /* Não deixa ficar gigante no PC */
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
 }
 
+/* Título da Escola (Menor para dar destaque ao relógio) */
 h1 {
-    font-size: 1rem;
+    font-size: 3vw; /* Tamanho responsivo (3% da largura da tela) */
+    color: #888;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #888;
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
+/* O RELÓGIO GIGANTE */
 #relogio {
-    font-size: 4.5rem; /* Números bem grandes */
-    font-weight: 700;
-    color: #2196F3; /* Azul vibrante */
-    margin: 10px 0;
-    /* tabular-nums impede que o relógio fique tremendo quando os segundos mudam */
-    font-variant-numeric: tabular-nums; 
-    line-height: 1;
-}
-
-/* Botão de Ativar */
-#btnIniciar {
-    background-color: #4CAF50; /* Verde */
-    color: white;
-    border: none;
-    padding: 15px 0;
-    font-size: 1.1rem;
+    font-size: 22vw; /* GIGANTE: Ocupa 22% da largura da tela */
     font-weight: bold;
-    border-radius: 50px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    color: #00e5ff; /* Azul Ciano Digital */
+    text-shadow: 0 0 30px rgba(0, 229, 255, 0.4); /* Efeito de brilho neon */
+    line-height: 1;
+    font-variant-numeric: tabular-nums; /* Evita que os números "pulem" */
+    margin: 20px 0;
 }
 
-#btnIniciar:active {
-    transform: scale(0.98); /* Efeito de clique */
-}
-
-/* Texto de Status */
-#status {
-    font-size: 0.9rem;
-    margin-bottom: 25px;
-    min-height: 1.2em; /* Reserva espaço para não pular a tela */
-    color: #ff9800; /* Laranja para avisos */
-}
-
-/* Caixa do Próximo Sinal */
+/* Informação do Próximo Sinal */
 .proximo-toque {
-    background-color: #2c2c2c;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #333;
-    font-size: 1.1rem;
+    font-size: 5vw; /* Grande o suficiente para ler de longe */
+    color: #ffca28; /* Amarelo para destaque */
+    margin-top: 10px;
+    font-weight: 500;
 }
 
 #proxSinal {
-    color: #fff;
     font-weight: bold;
-    font-size: 1.3rem;
-    display: block;
-    margin-top: 5px;
+    color: #fff;
 }
 
-/* Responsividade para telas muito pequenas */
-@media (max-width: 350px) {
-    #relogio {
-        font-size: 3.5rem;
-    }
+/* Botão de Iniciar (Só aparece antes de ativar) */
+#btnIniciar {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 20px 40px;
+    font-size: 2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+}
+
+#btnIniciar:hover {
+    transform: scale(1.05);
+    background-color: #218838;
+}
+
+#status {
+    font-size: 1.5rem;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* Ajuste para telas menores (Celular) caso precise testar */
+@media (max-width: 600px) {
+    #relogio { font-size: 18vw; }
+    h1 { font-size: 5vw; }
+    .proximo-toque { font-size: 6vw; }
 }
