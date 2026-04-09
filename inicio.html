@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinal Escolar - Digital Signage</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sinal">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        /* CSS Crítico embutido para garantir que o vídeo e o overlay carreguem corretamente */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay-digital-signage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 60px;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-background">
+        <video id="videoPlayer" autoplay muted loop playsinline>
+            <source src="videos/video1.mp4" type="video/mp4">
+            Seu navegador não suporta vídeos.
+        </video>
+    </div>
+
+    <div class="overlay-digital-signage">
+        
+        <header>
+            <h1>SINAL ESCOLAR AUTOMÁTICO</h1>
+        </header>
+
+        <main class="container">
+            <div id="relogio">00:00:00</div>
+        </main>
+
+        <footer class="footer-info">
+            <div class="controles-lado-esquerdo">
+                <button id="btnIniciar">ATIVAR SISTEMA</button>
+                <p id="status">Sistema Inativo. Clique para permitir áudio.</p>
+            </div>
+
+            <div class="proximo-toque">
+                PRÓXIMO SINAL: <span id="proxSinal">--:--</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <audio id="somIntro" src="sons/sinal.mp3"></audio>
+    <audio id="somA1" src="sons/a1.mp3"></audio>
+    <audio id="somA2" src="sons/a2.mp3"></audio>
+    <audio id="somA3" src="sons/a3.mp3"></audio>
+    <audio id="somA4" src="sons/a4.mp3"></audio> 
+    <audio id="somA5" src="sons/a5.mp3"></audio> 
+    <audio id="somA6" src="sons/a6.mp3"></audio> 
+    <audio id="somA7" src="sons/a7.mp3"></audio> 
+    <audio id="somA8" src="sons/a8.mp3"></audio> 
+    <audio id="somA9" src="sons/a9.mp3"></audio> 
+    <audio id="somFim" src="sons/fim.mp3"></audio>
+
+    <script src="script.js"></script>
+    <script>
+        // Registro do Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log("Service Worker ativo:", reg.scope))
+                .catch(err => console.log("Erro no Service Worker:", err));
+            });
+        }
+
+        // Lógica de Playlist de Vídeos (opcional)
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playlist = [
+            'videos/video1.mp4',
+            'videos/video2.mp4' // Adicione mais nomes de arquivos aqui se tiver
+        ];
+        let currentVideoIndex = 0;
+
+        videoPlayer.onended = function() {
+            if(playlist.length > 1) {
+                currentVideoIndex = (currentVideoIndex + 1) % playlist.length;
+                videoPlayer.src = playlist[currentVideoIndex];
+                videoPlayer.play();
+            }
+        };
+    </script>
+</body>
+</html>
