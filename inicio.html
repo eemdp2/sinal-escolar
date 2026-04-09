@@ -159,6 +159,30 @@ body, html {
     0%   { transform: translate(0, 0); }
     100% { transform: translate(-100%, 0); }
 }
+        /* Estilos para o Cabeçalho com o Brasão */
+.school-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente */
+    justify-content: center;
+    gap: 15px; /* Espaço entre a imagem e o texto */
+    padding-bottom: 20px;
+}
+
+.school-logo {
+    max-width: 150px; /* Largura máxima do brasão (ajuste conforme necessário) */
+    height: auto;      /* Mantém a proporção */
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); /* Sombra leve para destacar */
+}
+
+.school-header h2 {
+    font-size: 1rem;
+    color: #8b949e; /* Cor discreta do GitHub */
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 0;
+}
     </style>
 </head>
 <body>
@@ -172,18 +196,14 @@ body, html {
             </video>
         </main>
 
-        <aside class="info-panel">
+           <aside class="info-panel">
             <header class="school-header">
+                <img src="brasao-escola.png" alt="Brasão da Escola" class="school-logo">
                 <h2>SINAL ESCOLAR</h2>
             </header>
             
             <section class="clock-display">
                 <div id="relogio">00:00</div>
-            </section>
-
-            <section class="signal-info">
-                <p class="prox-text">PRÓXIMO:</p>
-                <div id="proxSinal" class="glow-text">--:--</div>
             </section>
 
             <footer class="controls-area">
