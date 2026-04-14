@@ -29,92 +29,78 @@ body {
     text-align: center;
 }
 
-/* 🔥 RELÓGIO MAIOR */
+/* RELÓGIO */
 #relogio {
     font-size: 80px;
     font-weight: bold;
-    margin: 20px 0;
 }
 
-/* 🔔 TOCANDO AGORA */
+/* TOCANDO */
 #tocandoAgora {
-    font-size: 20px;
+    font-size: 22px;
     color: #00ff88;
-    margin: 10px 0;
+    margin: 15px 0;
 }
 
-/* ⚡ ALERTA PISCANDO */
-.alerta {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 0, 0, 0.7);
-    display: none;
-    z-index: 9998;
-    animation: piscar 0.5s infinite;
-}
-
-@keyframes piscar {
-    0% {opacity: 0.2;}
-    50% {opacity: 1;}
-    100% {opacity: 0.2;}
-}
-
+/* PRÓXIMO */
 #proxSinal {
     font-size: 40px;
     color: #ffcc00;
+}
+
+/* ALERTA */
+.alerta {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,0,0,0.7);
+    display: none;
+    animation: piscar 0.5s infinite;
+    z-index: 999;
+}
+
+@keyframes piscar {
+    0%{opacity:0.2;}
+    50%{opacity:1;}
+    100%{opacity:0.2;}
 }
 
 button {
     padding: 10px;
     margin-top: 10px;
 }
-
-/* painel teste */
-#testeAudio {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background: #000;
-    padding: 10px;
-    border-radius: 8px;
-}
 </style>
 </head>
 
 <body>
 
-<!-- 🔴 ALERTA -->
 <div id="alerta" class="alerta"></div>
 
 <div class="container">
 
 <div class="video">
-    <video autoplay muted loop style="width:100%; height:100%;">
-        <source src="videos/video1.mp4" type="video/mp4">
-    </video>
+<video autoplay muted loop style="width:100%;height:100%;">
+<source src="videos/video1.mp4">
+</video>
 </div>
 
 <div class="painel">
-    <h2>SINAL ESCOLAR</h2>
+<h2>SINAL ESCOLAR</h2>
 
-    <div id="relogio">00:00:00</div>
+<div id="relogio">00:00:00</div>
 
-    <!-- 🔔 TOCANDO AGORA -->
-    <div id="tocandoAgora"></div>
+<div id="tocandoAgora"></div>
 
-    <p>PRÓXIMO SINAL</p>
-    <div id="proxSinal">--:--</div>
+<p>PRÓXIMO EVENTO</p>
+<div id="proxSinal">--:--</div>
 
-    <button id="btnIniciar">ATIVAR</button>
-    <p id="status">Sistema Inativo</p>
+<button id="btnIniciar">ATIVAR</button>
+<p id="status">Sistema Inativo</p>
 </div>
 
 </div>
 
-<!-- 🔊 ÁUDIOS -->
+<!-- ÁUDIOS -->
 <audio id="somIntro" src="sons/sinal.mp3"></audio>
 <audio id="somA1" src="sons/a1.mp3"></audio>
 <audio id="somA2" src="sons/a2.mp3"></audio>
@@ -130,43 +116,96 @@ button {
 <script>
 const relogio = document.getElementById("relogio");
 const tocandoAgora = document.getElementById("tocandoAgora");
+const prox = document.getElementById("proxSinal");
 const alerta = document.getElementById("alerta");
 
-/* 🕒 RELÓGIO */
+/* 📚 GRADE COMPLETA */
+const grade = {
+    "07:00": {nome:"Início das aulas", audio:"somA1"},
+    "07:45": {nome:"Fim da 1ª aula", audio:"somA2"},
+    "08:30": {nome:"Fim da 2ª aula", audio:"somA3"},
+    "09:15": {nome:"Intervalo", audio:"somA4"},
+    "09:36": {nome:"Aviso retorno", audio:"somA5"},
+    "09:40": {nome:"Retorno às aulas", audio:"somA6"},
+    "10:25": {nome:"Início 5ª aula", audio:"somA7"},
+    "11:10": {nome:"Início 6ª aula", audio:"somA8"},
+    "11:55": {nome:"Saída manhã", audio:"somA9"},
+
+    "13:00": {nome:"Início tarde", audio:"somA1"},
+    "13:45": {nome:"Fim 1ª aula", audio:"somA2"},
+    "14:30": {nome:"Fim 2ª aula", audio:"somA3"},
+    "15:15": {nome:"Intervalo", audio:"somA4"},
+    "15:36": {nome:"Aviso retorno", audio:"somA5"},
+    "15:40": {nome:"Retorno", audio:"somA6"},
+    "16:25": {nome:"Início 5ª aula", audio:"somA7"},
+    "17:55": {nome:"Saída", audio:"somA9"}
+};
+
+let ativo = false;
+
+/* 🕒 RELÓGIO + VERIFICAÇÃO */
 setInterval(() => {
     const agora = new Date();
-    relogio.innerText = agora.toLocaleTimeString();
-}, 1000);
 
-/* 🔊 TOCAR COM ALERTA */
-function tocarSom(id) {
-    const audio = document.getElementById(id);
+    const h = String(agora.getHours()).padStart(2,"0");
+    const m = String(agora.getMinutes()).padStart(2,"0");
+    const s = String(agora.getSeconds()).padStart(2,"0");
 
-    if (!audio) return;
+    const horaAtual = `${h}:${m}`;
 
+    relogio.innerText = `${h}:${m}:${s}`;
+
+    if (ativo && s === "00" && grade[horaAtual]) {
+        tocarEvento(grade[horaAtual]);
+    }
+
+    atualizarProximo(horaAtual);
+
+},1000);
+
+/* 🔊 TOCAR EVENTO */
+function tocarEvento(evento) {
+    const intro = document.getElementById("somIntro");
+    const audio = document.getElementById(evento.audio);
+
+    alerta.style.display = "block";
+    tocandoAgora.innerText = "🔔 " + evento.nome;
+
+    intro.currentTime = 0;
     audio.currentTime = 0;
 
-    // 🔴 alerta visual
-    alerta.style.display = "block";
-
-    // 🔔 texto
-    tocandoAgora.innerText = "🔔 TOCANDO AGORA";
-
-    audio.play().then(() => {
-
-        // quando terminar
-        audio.onended = () => {
-            alerta.style.display = "none";
-            tocandoAgora.innerText = "";
+    intro.play().then(()=>{
+        intro.onended = () => {
+            audio.play();
         };
-
-    }).catch(() => {
-        alerta.style.display = "none";
-        tocandoAgora.innerText = "Erro ao tocar";
     });
+
+    audio.onended = () => {
+        alerta.style.display = "none";
+        tocandoAgora.innerText = "";
+    };
 }
 
-/* BOTÃO ATIVAR (desbloqueio) */
+/* 📅 PRÓXIMO EVENTO */
+function atualizarProximo(horaAtual) {
+    const agoraMin = parseInt(horaAtual.split(":")[0])*60 + parseInt(horaAtual.split(":")[1]);
+
+    const lista = Object.keys(grade).sort();
+
+    for (let h of lista) {
+        let [hh,mm] = h.split(":");
+        let total = parseInt(hh)*60 + parseInt(mm);
+
+        if (total > agoraMin) {
+            prox.innerText = `${h} - ${grade[h].nome}`;
+            return;
+        }
+    }
+
+    prox.innerText = "Encerrado";
+}
+
+/* 🔓 ATIVAR SISTEMA */
 document.getElementById("btnIniciar").addEventListener("click", async () => {
     const audios = document.querySelectorAll("audio");
 
@@ -178,20 +217,10 @@ document.getElementById("btnIniciar").addEventListener("click", async () => {
         } catch {}
     }
 
-    alert("Sistema ativado!");
+    ativo = true;
+    alert("Sistema ativado");
 });
-
-/* TESTE RÁPIDO */
-window.testar = tocarSom;
 </script>
-
-<!-- 🔧 TESTE -->
-<div id="testeAudio">
-    <button onclick="testar('somIntro')">Intro</button>
-    <button onclick="testar('somA1')">A1</button>
-    <button onclick="testar('somA2')">A2</button>
-    <button onclick="testar('somFim')">FIM</button>
-</div>
 
 </body>
 </html>
