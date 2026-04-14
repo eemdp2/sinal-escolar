@@ -1,96 +1,116 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Escolar Digital</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Escolar</title>
 
-    <link rel="manifest" href="manifest.json">
+<style>
+body {
+    margin: 0;
+    background: #0d1117;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon-192.png">
+.container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    height: 100vh;
+}
 
-    <style>
-        body {
-            margin: 0;
-            background: #0d1117;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
+.video {
+    background: black;
+}
 
-        .container {
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            height: 100vh;
-        }
+.painel {
+    background: #161b22;
+    padding: 20px;
+    text-align: center;
+}
 
-        .video {
-            background: black;
-        }
+/* 🔥 RELÓGIO MAIOR */
+#relogio {
+    font-size: 80px;
+    font-weight: bold;
+    margin: 20px 0;
+}
 
-        .painel {
-            background: #161b22;
-            padding: 20px;
-            text-align: center;
-        }
+/* 🔔 TOCANDO AGORA */
+#tocandoAgora {
+    font-size: 20px;
+    color: #00ff88;
+    margin: 10px 0;
+}
 
-        #relogio {
-            font-size: 40px;
-            margin: 20px 0;
-        }
+/* ⚡ ALERTA PISCANDO */
+.alerta {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 0, 0, 0.7);
+    display: none;
+    z-index: 9998;
+    animation: piscar 0.5s infinite;
+}
 
-        #proxSinal {
-            font-size: 30px;
-            color: #ffcc00;
-        }
+@keyframes piscar {
+    0% {opacity: 0.2;}
+    50% {opacity: 1;}
+    100% {opacity: 0.2;}
+}
 
-        button {
-            margin: 3px;
-            padding: 8px;
-            cursor: pointer;
-        }
+#proxSinal {
+    font-size: 40px;
+    color: #ffcc00;
+}
 
-        /* Painel de teste */
-        #testeAudio {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background: #000;
-            padding: 10px;
-            border-radius: 8px;
-            z-index: 9999;
-        }
+button {
+    padding: 10px;
+    margin-top: 10px;
+}
 
-        #testeAudio p {
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-    </style>
+/* painel teste */
+#testeAudio {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: #000;
+    padding: 10px;
+    border-radius: 8px;
+}
+</style>
 </head>
 
 <body>
 
+<!-- 🔴 ALERTA -->
+<div id="alerta" class="alerta"></div>
+
 <div class="container">
 
-    <div class="video">
-        <video autoplay muted loop style="width:100%; height:100%;">
-            <source src="videos/video1.mp4" type="video/mp4">
-        </video>
-    </div>
+<div class="video">
+    <video autoplay muted loop style="width:100%; height:100%;">
+        <source src="videos/video1.mp4" type="video/mp4">
+    </video>
+</div>
 
-    <div class="painel">
-        <h2>SINAL ESCOLAR</h2>
+<div class="painel">
+    <h2>SINAL ESCOLAR</h2>
 
-        <div id="relogio">00:00:00</div>
+    <div id="relogio">00:00:00</div>
 
-        <p>PRÓXIMO SINAL</p>
-        <div id="proxSinal">--:--</div>
+    <!-- 🔔 TOCANDO AGORA -->
+    <div id="tocandoAgora"></div>
 
-        <br>
-        <button id="btnIniciar">ATIVAR</button>
-        <p id="status">Sistema Inativo</p>
-    </div>
+    <p>PRÓXIMO SINAL</p>
+    <div id="proxSinal">--:--</div>
+
+    <button id="btnIniciar">ATIVAR</button>
+    <p id="status">Sistema Inativo</p>
+</div>
 
 </div>
 
@@ -107,53 +127,71 @@
 <audio id="somA9" src="sons/a9.mp3"></audio>
 <audio id="somFim" src="sons/fim.mp3"></audio>
 
-<!-- 🔧 BOTÕES DE TESTE -->
-<div id="testeAudio">
-    <p>TESTE DE SOM</p>
-    <button onclick="testarSom('somIntro')">Intro</button>
-    <button onclick="testarSom('somA1')">A1</button>
-    <button onclick="testarSom('somA2')">A2</button>
-    <button onclick="testarSom('somA3')">A3</button>
-    <button onclick="testarSom('somA4')">A4</button>
-    <button onclick="testarSom('somA5')">A5</button>
-    <button onclick="testarSom('somA6')">A6</button>
-    <button onclick="testarSom('somA7')">A7</button>
-    <button onclick="testarSom('somA8')">A8</button>
-    <button onclick="testarSom('somA9')">A9</button>
-    <button onclick="testarSom('somFim')">FIM</button>
-</div>
-
-<script src="script.js"></script>
-
 <script>
-// 🔊 Função de teste
-function testarSom(id) {
+const relogio = document.getElementById("relogio");
+const tocandoAgora = document.getElementById("tocandoAgora");
+const alerta = document.getElementById("alerta");
+
+/* 🕒 RELÓGIO */
+setInterval(() => {
+    const agora = new Date();
+    relogio.innerText = agora.toLocaleTimeString();
+}, 1000);
+
+/* 🔊 TOCAR COM ALERTA */
+function tocarSom(id) {
     const audio = document.getElementById(id);
 
-    if (!audio) {
-        alert("Áudio não encontrado: " + id);
-        return;
-    }
+    if (!audio) return;
 
     audio.currentTime = 0;
 
-    audio.play()
-        .then(() => console.log("Tocando:", id))
-        .catch(err => {
-            console.log(err);
-            alert("Erro ao tocar: " + id);
-        });
+    // 🔴 alerta visual
+    alerta.style.display = "block";
+
+    // 🔔 texto
+    tocandoAgora.innerText = "🔔 TOCANDO AGORA";
+
+    audio.play().then(() => {
+
+        // quando terminar
+        audio.onended = () => {
+            alerta.style.display = "none";
+            tocandoAgora.innerText = "";
+        };
+
+    }).catch(() => {
+        alerta.style.display = "none";
+        tocandoAgora.innerText = "Erro ao tocar";
+    });
 }
+
+/* BOTÃO ATIVAR (desbloqueio) */
+document.getElementById("btnIniciar").addEventListener("click", async () => {
+    const audios = document.querySelectorAll("audio");
+
+    for (let a of audios) {
+        try {
+            await a.play();
+            a.pause();
+            a.currentTime = 0;
+        } catch {}
+    }
+
+    alert("Sistema ativado!");
+});
+
+/* TESTE RÁPIDO */
+window.testar = tocarSom;
 </script>
 
-<script>
-// Service Worker (opcional)
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-    .then(() => console.log("SW ativo"))
-    .catch(err => console.log(err));
-}
-</script>
+<!-- 🔧 TESTE -->
+<div id="testeAudio">
+    <button onclick="testar('somIntro')">Intro</button>
+    <button onclick="testar('somA1')">A1</button>
+    <button onclick="testar('somA2')">A2</button>
+    <button onclick="testar('somFim')">FIM</button>
+</div>
 
 </body>
 </html>
