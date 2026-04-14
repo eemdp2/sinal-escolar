@@ -5,228 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Escolar Digital</title>
     
-    <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon-192.png">
+
     <style>
-        /* Importação de Fontes Modernas e Digitais */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@800&display=swap');
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body, html {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-color: #0d1117; /* Fundo escuro do GitHub */
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-}
+        body, html {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #0d1117;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+        }
 
-/* Estrutura Grid (Grid de 2 colunas, 2 linhas) */
-.grid-container {
-    display: grid;
-    grid-template-columns: 3fr 1fr; /* Vídeo 75%, Painel 25% */
-    grid-template-rows: 1fr auto;   /* Conteúdo 100% de altura restante, Ticker fixo */
-    grid-template-areas: 
-        "video panel"
-        "ticker ticker"; /* Ticker ocupa as duas colunas */
-    height: 100vh;
-}
+        .grid-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            grid-template-rows: 1fr auto;
+            grid-template-areas: 
+                "video panel"
+                "ticker ticker";
+            height: 100vh;
+        }
 
-/* ÁREA DO VÍDEO (Esquerda) */
-.video-section {
-    grid-area: video;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .video-section {
+            grid-area: video;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.video-section video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Mostra o vídeo inteiro sem cortes */
-}
+        .video-section video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
 
-/* PAINEL DE INFORMAÇÕES (Direita) */
-.info-panel {
-    grid-area: panel;
-    background: #161b22; /* Um pouco mais claro que o fundo */
-    border-left: 1px solid #30363d;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-    text-align: center;
-}
+        .info-panel {
+            grid-area: panel;
+            background: #161b22;
+            border-left: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            text-align: center;
+        }
 
-.school-header h2 {
-    font-size: 1rem;
-    color: #8b949e;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-}
+        .school-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 20px;
+        }
 
-/* O Relógio Digital */
-.clock-display {
-    border-top: 1px solid #30363d;
-    border-bottom: 1px solid #30363d;
-    padding: 20px 0;
-}
+        .school-logo {
+            max-width: 150px;
+        }
 
-#relogio {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 4vw; /* Tamanho proporcional à tela */
-    font-weight: 800;
-    color: #fff;
-}
+        .school-header h2 {
+            font-size: 1rem;
+            color: #8b949e;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
 
-/* Próximo Sinal */
-.signal-info {
-    margin-top: 10px;
-}
+        #relogio {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4vw;
+            font-weight: 800;
+        }
 
-.prox-text {
-    font-size: 1.2rem;
-    color: #8b949e;
-}
+        #proxSinal {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 5vw;
+            font-weight: 800;
+            color: #ffcc00;
+        }
 
-#proxSinal {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 5vw;
-    font-weight: 800;
-    color: #ffcc00; /* Amarelo da imagem */
-    text-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
-}
+        #btnIniciar {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #238636;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
 
-/* Área de Controles */
-.controls-area {
-    margin-top: auto;
-}
+        #status {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
 
-#btnIniciar {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #fff;
-    background-color: #238636; /* Verde GitHub */
-    border: 1px solid rgba(240, 246, 252, 0.1);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s;
-}
+        .marquee-ticker {
+            grid-area: ticker;
+            background: #1f242c;
+            border-top: 1px solid #30363d;
+            font-size: 1.1rem;
+            padding: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
 
-#btnIniciar:hover {
-    background-color: #2ea043;
-}
+        .marquee-ticker p {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+        }
 
-#status {
-    margin-top: 10px;
-    font-size: 0.8rem;
-    color: #484f58;
-}
-
-/* BARRA DE AVISOS (Ticker Inferior) */
-.marquee-ticker {
-    grid-area: ticker;
-    background: #1f242c;
-    border-top: 1px solid #30363d;
-    color: #c9d1d9;
-    font-size: 1.1rem;
-    padding: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    height: 40px;
-}
-
-/* Animação do Ticker (Marquee) */
-.marquee-ticker p {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marquee 20s linear infinite;
-}
-
-@keyframes marquee {
-    0%   { transform: translate(0, 0); }
-    100% { transform: translate(-100%, 0); }
-}
-        /* Estilos para o Cabeçalho com o Brasão */
-.school-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centraliza horizontalmente */
-    justify-content: center;
-    gap: 15px; /* Espaço entre a imagem e o texto */
-    padding-bottom: 20px;
-}
-
-.school-logo {
-    max-width: 150px; /* Largura máxima do brasão (ajuste conforme necessário) */
-    height: auto;      /* Mantém a proporção */
-    object-fit: contain;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); /* Sombra leve para destacar */
-}
-
-.school-header h2 {
-    font-size: 1rem;
-    color: #8b949e; /* Cor discreta do GitHub */
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin: 0;
-}
+        @keyframes marquee {
+            0%   { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
     </style>
 </head>
+
 <body>
 
-    <div class="grid-container">
-        
-        <main class="video-section">
-            <video id="videoPlayer" autoplay muted loop playsinline>
-                <source src="videos/video1.mp4" type="video/mp4">
-                Seu navegador não suporta vídeos.
-            </video>
-        </main>
-
-         <aside class="info-panel">
-    <header class="school-header">
-        <img src="brasao-escola.png" alt="Brasão da Escola" class="school-logo">
-        <h2>SINAL ESCOLAR</h2>
-    </header>
+<div class="grid-container">
     
-    <section class="clock-display">
-        <div id="relogio">00:00</div>
-    </section>
+    <main class="video-section">
+        <video autoplay muted loop playsinline>
+            <source src="videos/video1.mp4" type="video/mp4">
+        </video>
+    </main>
 
-    <section class="signal-info">
-        <p class="prox-text">PRÓXIMO SINAL:</p>
-        <div id="proxSinal">--:--</div>
-    </section>
-    <footer class="controls-area">
-        <button id="btnIniciar">ATIVAR</button>
-        <p id="status">Sistema Inativo</p>
-    </footer>
-</aside>
+    <aside class="info-panel">
+        <header class="school-header">
+            <img src="brasao-escola.png" class="school-logo">
+            <h2>SINAL ESCOLAR</h2>
+        </header>
 
-        <footer class="marquee-ticker">
-            <p>Seja bem-vindo! | Horários de aulas atualizados | Use o botão ATIVAR para habilitar os sinais sonoros. | 🔔</p>
-        </footer>
+        <div id="relogio">00:00:00</div>
 
-    </div>
-
-    <div id="audioContainer" style="display:none">
-        <audio id="somIntro" src="sons/sinal.mp3"></audio>
-        <audio id="somA1" src="sons/a1.mp3"></audio>
+        <div>
+            <p>PRÓXIMO SINAL</p>
+            <div id="proxSinal">--:--</div>
         </div>
 
-    <script src="script.js"></script>
+        <div>
+            <button id="btnIniciar">ATIVAR</button>
+            <p id="status">Sistema Inativo</p>
+        </div>
+    </aside>
+
+    <footer class="marquee-ticker">
+        <p>Use o botão ATIVAR para habilitar os sinais sonoros | Sistema escolar automático 🔔</p>
+    </footer>
+
+</div>
+
+<!-- 🔊 ÁUDIOS (ESSENCIAL - NÃO REMOVER) -->
+<audio id="somIntro" src="sons/sinal.mp3"></audio>
+<audio id="somA1" src="sons/a1.mp3"></audio>
+<audio id="somA2" src="sons/a2.mp3"></audio>
+<audio id="somA3" src="sons/a3.mp3"></audio>
+<audio id="somA4" src="sons/a4.mp3"></audio>
+<audio id="somA5" src="sons/a5.mp3"></audio>
+<audio id="somA6" src="sons/a6.mp3"></audio>
+<audio id="somA7" src="sons/a7.mp3"></audio>
+<audio id="somA8" src="sons/a8.mp3"></audio>
+<audio id="somA9" src="sons/a9.mp3"></audio>
+<audio id="somFim" src="sons/fim.mp3"></audio>
+
+<script src="script.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+    .then(() => console.log("Service Worker OK"))
+    .catch(err => console.log(err));
+}
+</script>
+
 </body>
 </html>
