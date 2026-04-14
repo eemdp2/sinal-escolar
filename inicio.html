@@ -3,71 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Escolar</title>
+<title>Painel Escolar TV</title>
 
 <style>
 body {
     margin: 0;
-    background: #0d1117;
+    background: #000;
     color: #fff;
     font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
+/* LAYOUT TV */
 .container {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 2fr 1fr;
     height: 100vh;
 }
 
+/* VIDEO */
 .video {
     background: black;
 }
 
+.video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* PAINEL */
 .painel {
-    background: #161b22;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #0d1117;
     text-align: center;
+    padding: 20px;
 }
 
-/* RELÓGIO */
+/* RELÓGIO GIGANTE */
 #relogio {
-    font-size: 80px;
+    font-size: 110px;
     font-weight: bold;
+    letter-spacing: 2px;
 }
 
-/* TOCANDO */
-#tocandoAgora {
-    font-size: 22px;
+/* EVENTO ATUAL */
+#eventoAtual {
+    font-size: 40px;
+    margin-top: 20px;
     color: #00ff88;
-    margin: 15px 0;
 }
 
 /* PRÓXIMO */
 #proxSinal {
     font-size: 40px;
+    margin-top: 20px;
     color: #ffcc00;
 }
 
-/* ALERTA */
+/* STATUS PEQUENO */
+#status {
+    margin-top: 30px;
+    font-size: 16px;
+    opacity: 0.6;
+}
+
+/* ALERTA TELA INTEIRA */
 .alerta {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: rgba(255,0,0,0.7);
+    background: rgba(255,0,0,0.8);
     display: none;
-    animation: piscar 0.5s infinite;
     z-index: 999;
+    animation: piscar 0.5s infinite;
 }
 
 @keyframes piscar {
-    0%{opacity:0.2;}
-    50%{opacity:1;}
-    100%{opacity:0.2;}
-}
-
-button {
-    padding: 10px;
-    margin-top: 10px;
+    0% {opacity: 0.2;}
+    50% {opacity: 1;}
+    100% {opacity: 0.2;}
 }
 </style>
 </head>
@@ -79,23 +97,21 @@ button {
 <div class="container">
 
 <div class="video">
-<video autoplay muted loop style="width:100%;height:100%;">
+<video autoplay muted loop>
 <source src="videos/video1.mp4">
 </video>
 </div>
 
 <div class="painel">
-<h2>SINAL ESCOLAR</h2>
 
 <div id="relogio">00:00:00</div>
 
-<div id="tocandoAgora"></div>
+<div id="eventoAtual">Aguardando sistema...</div>
 
-<p>PRÓXIMO EVENTO</p>
-<div id="proxSinal">--:--</div>
+<div id="proxSinal">Próximo: --:--</div>
 
-<button id="btnIniciar">ATIVAR</button>
-<p id="status">Sistema Inativo</p>
+<div id="status">Sistema ativo em execução</div>
+
 </div>
 
 </div>
@@ -111,42 +127,30 @@ button {
 <audio id="somA7" src="sons/a7.mp3"></audio>
 <audio id="somA8" src="sons/a8.mp3"></audio>
 <audio id="somA9" src="sons/a9.mp3"></audio>
-<audio id="somFim" src="sons/fim.mp3"></audio>
 
 <script>
 const relogio = document.getElementById("relogio");
-const tocandoAgora = document.getElementById("tocandoAgora");
+const evento = document.getElementById("eventoAtual");
 const prox = document.getElementById("proxSinal");
 const alerta = document.getElementById("alerta");
 
-/* 📚 GRADE COMPLETA */
-const grade = {
-    "07:00": {nome:"Início das aulas", audio:"somA1"},
-    "07:45": {nome:"Fim da 1ª aula", audio:"somA2"},
-    "08:30": {nome:"Fim da 2ª aula", audio:"somA3"},
-    "09:15": {nome:"Intervalo", audio:"somA4"},
-    "09:36": {nome:"Aviso retorno", audio:"somA5"},
-    "09:40": {nome:"Retorno às aulas", audio:"somA6"},
-    "10:25": {nome:"Início 5ª aula", audio:"somA7"},
-    "11:10": {nome:"Início 6ª aula", audio:"somA8"},
-    "11:55": {nome:"Saída manhã", audio:"somA9"},
+let ativo = true;
 
-    "13:00": {nome:"Início tarde", audio:"somA1"},
-    "13:45": {nome:"Fim 1ª aula", audio:"somA2"},
-    "14:30": {nome:"Fim 2ª aula", audio:"somA3"},
-    "15:15": {nome:"Intervalo", audio:"somA4"},
-    "15:36": {nome:"Aviso retorno", audio:"somA5"},
-    "15:40": {nome:"Retorno", audio:"somA6"},
-    "16:25": {nome:"Início 5ª aula", audio:"somA7"},
-    "17:55": {nome:"Saída", audio:"somA9"}
+/* GRADE */
+const grade = {
+"07:00": {nome:"Início das aulas", audio:"somA1"},
+"07:45": {nome:"Fim da 1ª aula", audio:"somA2"},
+"08:30": {nome:"Fim da 2ª aula", audio:"somA3"},
+"09:15": {nome:"Intervalo", audio:"somA4"},
+"09:40": {nome:"Retorno", audio:"somA5"},
+"10:25": {nome:"Aula", audio:"somA6"},
+"11:10": {nome:"Aula", audio:"somA7"},
+"11:55": {nome:"Saída", audio:"somA8"}
 };
 
-let ativo = false;
-
-/* 🕒 RELÓGIO + VERIFICAÇÃO */
+/* RELÓGIO */
 setInterval(() => {
     const agora = new Date();
-
     const h = String(agora.getHours()).padStart(2,"0");
     const m = String(agora.getMinutes()).padStart(2,"0");
     const s = String(agora.getSeconds()).padStart(2,"0");
@@ -156,38 +160,38 @@ setInterval(() => {
     relogio.innerText = `${h}:${m}:${s}`;
 
     if (ativo && s === "00" && grade[horaAtual]) {
-        tocarEvento(grade[horaAtual]);
+        tocar(grade[horaAtual]);
     }
 
     atualizarProximo(horaAtual);
 
 },1000);
 
-/* 🔊 TOCAR EVENTO */
-function tocarEvento(evento) {
+/* TOCAR */
+function tocar(item) {
+
     const intro = document.getElementById("somIntro");
-    const audio = document.getElementById(evento.audio);
+    const audio = document.getElementById(item.audio);
+
+    evento.innerText = "🔔 " + item.nome;
 
     alerta.style.display = "block";
-    tocandoAgora.innerText = "🔔 " + evento.nome;
 
     intro.currentTime = 0;
     audio.currentTime = 0;
 
     intro.play().then(()=>{
-        intro.onended = () => {
-            audio.play();
-        };
+        intro.onended = () => audio.play();
     });
 
     audio.onended = () => {
         alerta.style.display = "none";
-        tocandoAgora.innerText = "";
     };
 }
 
-/* 📅 PRÓXIMO EVENTO */
+/* PRÓXIMO */
 function atualizarProximo(horaAtual) {
+
     const agoraMin = parseInt(horaAtual.split(":")[0])*60 + parseInt(horaAtual.split(":")[1]);
 
     const lista = Object.keys(grade).sort();
@@ -197,29 +201,13 @@ function atualizarProximo(horaAtual) {
         let total = parseInt(hh)*60 + parseInt(mm);
 
         if (total > agoraMin) {
-            prox.innerText = `${h} - ${grade[h].nome}`;
+            prox.innerText = `Próximo: ${h} - ${grade[h].nome}`;
             return;
         }
     }
 
     prox.innerText = "Encerrado";
 }
-
-/* 🔓 ATIVAR SISTEMA */
-document.getElementById("btnIniciar").addEventListener("click", async () => {
-    const audios = document.querySelectorAll("audio");
-
-    for (let a of audios) {
-        try {
-            await a.play();
-            a.pause();
-            a.currentTime = 0;
-        } catch {}
-    }
-
-    ativo = true;
-    alert("Sistema ativado");
-});
 </script>
 
 </body>
