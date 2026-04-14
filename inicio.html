@@ -1,214 +1,96 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Escolar TV</title>
-
-<style>
-body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-}
-
-/* LAYOUT TV */
-.container {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    height: 100vh;
-}
-
-/* VIDEO */
-.video {
-    background: black;
-}
-
-.video video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* PAINEL */
-.painel {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #0d1117;
-    text-align: center;
-    padding: 20px;
-}
-
-/* RELÓGIO GIGANTE */
-#relogio {
-    font-size: 110px;
-    font-weight: bold;
-    letter-spacing: 2px;
-}
-
-/* EVENTO ATUAL */
-#eventoAtual {
-    font-size: 40px;
-    margin-top: 20px;
-    color: #00ff88;
-}
-
-/* PRÓXIMO */
-#proxSinal {
-    font-size: 40px;
-    margin-top: 20px;
-    color: #ffcc00;
-}
-
-/* STATUS PEQUENO */
-#status {
-    margin-top: 30px;
-    font-size: 16px;
-    opacity: 0.6;
-}
-
-/* ALERTA TELA INTEIRA */
-.alerta {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,0,0,0.8);
-    display: none;
-    z-index: 999;
-    animation: piscar 0.5s infinite;
-}
-
-@keyframes piscar {
-    0% {opacity: 0.2;}
-    50% {opacity: 1;}
-    100% {opacity: 0.2;}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinal Escolar</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Sinal">
+    <link rel="apple-touch-icon" href="icon-192.png">
 </head>
-
 <body>
+    <div class="container">
+        <h1>Sinal Escolar Automático</h1>
+        
+        <div id="relogio">00:00:00</div>
+        
+        <button id="btnIniciar">ATIVAR SISTEMA</button>
+        <p id="status">Sistema Inativo. Clique em ativar.</p>
+        
+        <div class="proximo-toque">
+            Próximo sinal: <span id="proxSinal">--:--</span>
+        </div>
 
-<div id="alerta" class="alerta"></div>
+        <!-- 🎥 PLAYER DE VÍDEO ADICIONADO -->
+        <video id="playerVideo" width="100%" height="360" controls autoplay muted></video>
 
-<div class="container">
+    </div>
 
-<div class="video">
-<video autoplay muted loop>
-<source src="videos/video1.mp4">
-</video>
-</div>
+    <audio id="somIntro" src="sons/sinal.mp3"></audio>
 
-<div class="painel">
+    <audio id="somA1" src="sons/a1.mp3"></audio>
+    <audio id="somA2" src="sons/a2.mp3"></audio>
+    <audio id="somA3" src="sons/a3.mp3"></audio>
+    
+    <audio id="somA4" src="sons/a4.mp3"></audio>
+    <audio id="somA5" src="sons/a5.mp3"></audio>
+    <audio id="somA6" src="sons/a6.mp3"></audio>
+    <audio id="somA7" src="sons/a7.mp3"></audio>
+    <audio id="somA8" src="sons/a8.mp3"></audio>
+    <audio id="somA9" src="sons/a9.mp3"></audio>
+    <audio id="somFim" src="sons/fim.mp3"></audio>
 
-<div id="relogio">00:00:00</div>
+    <script src="script.js"></script>
 
-<div id="eventoAtual">Aguardando sistema...</div>
+    <!-- 🎬 SCRIPT DO VÍDEO EM SEQUÊNCIA -->
+    <script>
+        const player = document.getElementById("playerVideo");
+        let index = 1;
 
-<div id="proxSinal">Próximo: --:--</div>
+        function tocarVideo() {
+            const caminho = `videos/video${index}.mp4`;
+            player.src = caminho;
+            player.play().catch(() => {});
 
-<div id="status">Sistema ativo em execução</div>
+            player.onended = () => {
+                index++;
+                const teste = new XMLHttpRequest();
+                teste.open("HEAD", `videos/video${index}.mp4`);
 
-</div>
+                teste.onload = function () {
+                    if (teste.status === 200) {
+                        tocarVideo();
+                    } else {
+                        index = 1; // reinicia sequência
+                        tocarVideo();
+                    }
+                };
 
-</div>
+                teste.onerror = function () {
+                    index = 1;
+                    tocarVideo();
+                };
 
-<!-- ÁUDIOS -->
-<audio id="somIntro" src="sons/sinal.mp3"></audio>
-<audio id="somA1" src="sons/a1.mp3"></audio>
-<audio id="somA2" src="sons/a2.mp3"></audio>
-<audio id="somA3" src="sons/a3.mp3"></audio>
-<audio id="somA4" src="sons/a4.mp3"></audio>
-<audio id="somA5" src="sons/a5.mp3"></audio>
-<audio id="somA6" src="sons/a6.mp3"></audio>
-<audio id="somA7" src="sons/a7.mp3"></audio>
-<audio id="somA8" src="sons/a8.mp3"></audio>
-<audio id="somA9" src="sons/a9.mp3"></audio>
-
-<script>
-const relogio = document.getElementById("relogio");
-const evento = document.getElementById("eventoAtual");
-const prox = document.getElementById("proxSinal");
-const alerta = document.getElementById("alerta");
-
-let ativo = true;
-
-/* GRADE */
-const grade = {
-"07:00": {nome:"Início das aulas", audio:"somA1"},
-"07:45": {nome:"Fim da 1ª aula", audio:"somA2"},
-"08:30": {nome:"Fim da 2ª aula", audio:"somA3"},
-"09:15": {nome:"Intervalo", audio:"somA4"},
-"09:40": {nome:"Retorno", audio:"somA5"},
-"10:25": {nome:"Aula", audio:"somA6"},
-"11:10": {nome:"Aula", audio:"somA7"},
-"11:55": {nome:"Saída", audio:"somA8"}
-};
-
-/* RELÓGIO */
-setInterval(() => {
-    const agora = new Date();
-    const h = String(agora.getHours()).padStart(2,"0");
-    const m = String(agora.getMinutes()).padStart(2,"0");
-    const s = String(agora.getSeconds()).padStart(2,"0");
-
-    const horaAtual = `${h}:${m}`;
-
-    relogio.innerText = `${h}:${m}:${s}`;
-
-    if (ativo && s === "00" && grade[horaAtual]) {
-        tocar(grade[horaAtual]);
-    }
-
-    atualizarProximo(horaAtual);
-
-},1000);
-
-/* TOCAR */
-function tocar(item) {
-
-    const intro = document.getElementById("somIntro");
-    const audio = document.getElementById(item.audio);
-
-    evento.innerText = "🔔 " + item.nome;
-
-    alerta.style.display = "block";
-
-    intro.currentTime = 0;
-    audio.currentTime = 0;
-
-    intro.play().then(()=>{
-        intro.onended = () => audio.play();
-    });
-
-    audio.onended = () => {
-        alerta.style.display = "none";
-    };
-}
-
-/* PRÓXIMO */
-function atualizarProximo(horaAtual) {
-
-    const agoraMin = parseInt(horaAtual.split(":")[0])*60 + parseInt(horaAtual.split(":")[1]);
-
-    const lista = Object.keys(grade).sort();
-
-    for (let h of lista) {
-        let [hh,mm] = h.split(":");
-        let total = parseInt(hh)*60 + parseInt(mm);
-
-        if (total > agoraMin) {
-            prox.innerText = `Próximo: ${h} - ${grade[h].nome}`;
-            return;
+                teste.send();
+            };
         }
-    }
 
-    prox.innerText = "Encerrado";
-}
-</script>
+        // inicia automaticamente
+        window.addEventListener("load", tocarVideo);
+    </script>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("Service Worker Registrado!"))
+            .catch(err => console.log("Erro no SW:", err));
+        }
+    </script>
 </body>
 </html>
