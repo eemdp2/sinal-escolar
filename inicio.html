@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Escolar Digital</title>
-    
+
     <link rel="manifest" href="manifest.json">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,167 +12,89 @@
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@800&display=swap');
-
-        * {
-            box-sizing: border-box;
+        body {
             margin: 0;
-            padding: 0;
-        }
-
-        body, html {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            background-color: #0d1117;
+            background: #0d1117;
             color: #fff;
-            font-family: 'Inter', sans-serif;
+            font-family: Arial, sans-serif;
         }
 
-        .grid-container {
+        .container {
             display: grid;
             grid-template-columns: 3fr 1fr;
-            grid-template-rows: 1fr auto;
-            grid-template-areas: 
-                "video panel"
-                "ticker ticker";
             height: 100vh;
         }
 
-        .video-section {
-            grid-area: video;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .video {
+            background: black;
         }
 
-        .video-section video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .info-panel {
-            grid-area: panel;
+        .painel {
             background: #161b22;
-            border-left: 1px solid #30363d;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
             padding: 20px;
             text-align: center;
         }
 
-        .school-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            padding-bottom: 20px;
-        }
-
-        .school-logo {
-            max-width: 150px;
-        }
-
-        .school-header h2 {
-            font-size: 1rem;
-            color: #8b949e;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
         #relogio {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 4vw;
-            font-weight: 800;
+            font-size: 40px;
+            margin: 20px 0;
         }
 
         #proxSinal {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 5vw;
-            font-weight: 800;
+            font-size: 30px;
             color: #ffcc00;
         }
 
-        #btnIniciar {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #fff;
-            background-color: #238636;
-            border: none;
-            border-radius: 6px;
+        button {
+            margin: 3px;
+            padding: 8px;
             cursor: pointer;
         }
 
-        #status {
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: #8b949e;
-        }
-
-        .marquee-ticker {
-            grid-area: ticker;
-            background: #1f242c;
-            border-top: 1px solid #30363d;
-            font-size: 1.1rem;
+        /* Painel de teste */
+        #testeAudio {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: #000;
             padding: 10px;
-            white-space: nowrap;
-            overflow: hidden;
+            border-radius: 8px;
+            z-index: 9999;
         }
 
-        .marquee-ticker p {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 20s linear infinite;
-        }
-
-        @keyframes marquee {
-            0%   { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
+        #testeAudio p {
+            font-size: 12px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="grid-container">
-    
-    <main class="video-section">
-        <video autoplay muted loop playsinline>
+<div class="container">
+
+    <div class="video">
+        <video autoplay muted loop style="width:100%; height:100%;">
             <source src="videos/video1.mp4" type="video/mp4">
         </video>
-    </main>
+    </div>
 
-    <aside class="info-panel">
-        <header class="school-header">
-            <img src="brasao-escola.png" class="school-logo">
-            <h2>SINAL ESCOLAR</h2>
-        </header>
+    <div class="painel">
+        <h2>SINAL ESCOLAR</h2>
 
         <div id="relogio">00:00:00</div>
 
-        <div>
-            <p>PRÓXIMO SINAL</p>
-            <div id="proxSinal">--:--</div>
-        </div>
+        <p>PRÓXIMO SINAL</p>
+        <div id="proxSinal">--:--</div>
 
-        <div>
-            <button id="btnIniciar">ATIVAR</button>
-            <p id="status">Sistema Inativo</p>
-        </div>
-    </aside>
-
-    <footer class="marquee-ticker">
-        <p>Use o botão ATIVAR para habilitar os sinais sonoros | Sistema escolar automático 🔔</p>
-    </footer>
+        <br>
+        <button id="btnIniciar">ATIVAR</button>
+        <p id="status">Sistema Inativo</p>
+    </div>
 
 </div>
 
-<!-- 🔊 ÁUDIOS (ESSENCIAL - NÃO REMOVER) -->
+<!-- 🔊 ÁUDIOS -->
 <audio id="somIntro" src="sons/sinal.mp3"></audio>
 <audio id="somA1" src="sons/a1.mp3"></audio>
 <audio id="somA2" src="sons/a2.mp3"></audio>
@@ -185,12 +107,50 @@
 <audio id="somA9" src="sons/a9.mp3"></audio>
 <audio id="somFim" src="sons/fim.mp3"></audio>
 
+<!-- 🔧 BOTÕES DE TESTE -->
+<div id="testeAudio">
+    <p>TESTE DE SOM</p>
+    <button onclick="testarSom('somIntro')">Intro</button>
+    <button onclick="testarSom('somA1')">A1</button>
+    <button onclick="testarSom('somA2')">A2</button>
+    <button onclick="testarSom('somA3')">A3</button>
+    <button onclick="testarSom('somA4')">A4</button>
+    <button onclick="testarSom('somA5')">A5</button>
+    <button onclick="testarSom('somA6')">A6</button>
+    <button onclick="testarSom('somA7')">A7</button>
+    <button onclick="testarSom('somA8')">A8</button>
+    <button onclick="testarSom('somA9')">A9</button>
+    <button onclick="testarSom('somFim')">FIM</button>
+</div>
+
 <script src="script.js"></script>
 
 <script>
+// 🔊 Função de teste
+function testarSom(id) {
+    const audio = document.getElementById(id);
+
+    if (!audio) {
+        alert("Áudio não encontrado: " + id);
+        return;
+    }
+
+    audio.currentTime = 0;
+
+    audio.play()
+        .then(() => console.log("Tocando:", id))
+        .catch(err => {
+            console.log(err);
+            alert("Erro ao tocar: " + id);
+        });
+}
+</script>
+
+<script>
+// Service Worker (opcional)
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
-    .then(() => console.log("Service Worker OK"))
+    .then(() => console.log("SW ativo"))
     .catch(err => console.log(err));
 }
 </script>
