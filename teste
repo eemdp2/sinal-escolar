@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinal Escolar</title>
+
+```
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Sinal">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<style>
+    .testes {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+    }
+
+    .testes h3 {
+        margin-top: 0;
+    }
+
+    .testes button {
+        margin: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+</style>
+```
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Sinal Escolar Automático</h1>
+
+```
+<div id="relogio">00:00:00</div>
+
+<button id="btnIniciar">ATIVAR SISTEMA</button>
+
+<p id="status">
+    Sistema Inativo. Clique em ativar.
+</p>
+
+<div class="proximo-toque">
+    Próximo sinal:
+    <span id="proxSinal">--:--</span>
+</div>
+
+<div class="testes">
+    <h3>Teste dos Sons</h3>
+
+    <button onclick="testarSom('somIntro')">🔔 Sinal</button>
+
+    <hr>
+
+    <button onclick="testarSom('somA1')">A1</button>
+    <button onclick="testarSom('somA2')">A2</button>
+    <button onclick="testarSom('somA3')">A3</button>
+    <button onclick="testarSom('somA4')">A4</button>
+    <button onclick="testarSom('somA5')">A5</button>
+    <button onclick="testarSom('somA6')">A6</button>
+    <button onclick="testarSom('somA7')">A7</button>
+    <button onclick="testarSom('somA8')">A8</button>
+    <button onclick="testarSom('somA9')">A9</button>
+    <button onclick="testarSom('somFim')">Fim</button>
+
+    <hr>
+
+    <button onclick="testarSequencia('somA1')">🔔 + A1</button>
+    <button onclick="testarSequencia('somA2')">🔔 + A2</button>
+    <button onclick="testarSequencia('somA3')">🔔 + A3</button>
+    <button onclick="testarSequencia('somA4')">🔔 + A4</button>
+    <button onclick="testarSequencia('somA5')">🔔 + A5</button>
+    <button onclick="testarSequencia('somA6')">🔔 + A6</button>
+    <button onclick="testarSequencia('somA7')">🔔 + A7</button>
+    <button onclick="testarSequencia('somA8')">🔔 + A8</button>
+    <button onclick="testarSequencia('somA9')">🔔 + A9</button>
+    <button onclick="testarSequencia('somFim')">🔔 + Fim</button>
+</div>
+```
+
+</div>
+
+<audio id="somIntro" src="sons/sinal.mp3"></audio>
+
+<audio id="somA1" src="sons/a1.mp3"></audio> <audio id="somA2" src="sons/a2.mp3"></audio> <audio id="somA3" src="sons/a3.mp3"></audio> <audio id="somA4" src="sons/a4.mp3"></audio> <audio id="somA5" src="sons/a5.mp3"></audio> <audio id="somA6" src="sons/a6.mp3"></audio> <audio id="somA7" src="sons/a7.mp3"></audio> <audio id="somA8" src="sons/a8.mp3"></audio> <audio id="somA9" src="sons/a9.mp3"></audio> <audio id="somFim" src="sons/fim.mp3"></audio>
+
+<script src="script.js"></script>
+
+<script>
+
+function pararTodos() {
+
+    const audios = document.querySelectorAll('audio');
+
+    audios.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+
+}
+
+function testarSom(id) {
+
+    pararTodos();
+
+    const audio = document.getElementById(id);
+
+    if(audio){
+        audio.play();
+    }
+
+}
+
+function testarSequencia(idAudio) {
+
+    pararTodos();
+
+    const intro = document.getElementById('somIntro');
+    const audio = document.getElementById(idAudio);
+
+    intro.play();
+
+    intro.onended = () => {
+        audio.play();
+    };
+
+}
+
+if ('serviceWorker' in navigator) {
+
+    navigator.serviceWorker.register('sw.js')
+    .then(() => console.log('Service Worker Registrado!'))
+    .catch(err => console.log('Erro no SW:', err));
+
+}
+
+</script>
+
+</body>
+</html>
